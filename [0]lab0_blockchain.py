@@ -10,8 +10,8 @@ from flask import Flask, jsonify, request
 class Blockchain: #block chain class
     def __init__(self):
         self.current_transactions = []
-        self.chain = []
-        self.nodes = set()
+        self.chain = [] # lists for save the blocks. 
+        self.nodes = set() # prevent to repetition 
 
         # Create the genesis block
         self.new_block(previous_hash='1', proof=100)
@@ -43,7 +43,8 @@ class Blockchain: #block chain class
 
         last_block = chain[0] # The start is genesis block so last block will have chain[0] value
         current_index = 1
-
+            
+        
         while current_index < len(chain):
             block = chain[current_index]
             print(f'{last_block}')
@@ -62,7 +63,7 @@ class Blockchain: #block chain class
             current_index += 1
 
         return True
-
+    
     def resolve_conflicts(self):
 
         # 모든 이웃 노드를 순회하고, 체인을 다운로드 하고 메소드를 통해 체인을 검사
@@ -109,7 +110,8 @@ class Blockchain: #block chain class
         :return: New Block
         """
 
-        # variables that can get block information from code
+        # Variables that can get block information from code
+        # Each new block must have previous hash. It shows the definition of Blockchain. 
         block = {
             'index': len(self.chain) + 1, #index of block It shows the order of block
             'timestamp': time(), # Time that block shows
@@ -134,7 +136,8 @@ class Blockchain: #block chain class
         :return: The index of the Block that will hold this transaction
         """
 
-        ## current_transacitions return the block of index.
+        # current_transacitions return the block of index.
+        #
         self.current_transactions.append({
             'sender': sender,
             'recipient': recipient,
@@ -142,11 +145,12 @@ class Blockchain: #block chain class
         })
 
         return self.last_block['index'] + 1
+       
 
     @property
     def last_block(self):
         return self.chain[-1]
-
+    
     @staticmethod
     def hash(block): # SHA 2560 hash will be created.
         """
@@ -158,7 +162,8 @@ class Blockchain: #block chain class
         # The reason the Dictionary is chosen, to prevent for reversing orders.
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
-
+    
+    #POW 
     def proof_of_work(self, last_block):
         # POW
         # process of finding a value less then SHA 256 hash.
@@ -176,6 +181,7 @@ class Blockchain: #block chain class
         last_hash = self.hash(last_block)
 
         proof = 0
+        #Check whether it is valid or not 
         while self.valid_proof(last_proof, proof, last_hash) is False:
             proof += 1
 
@@ -206,6 +212,7 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
+#transmit 
 @app.route('/mine', methods=['GET'])
 def mine():
     # We run the proof of work algorithm to get the next proof...
@@ -250,6 +257,7 @@ def new_transaction():
     return jsonify(response), 201
 
 
+#all blockchain structure - chain/ length 
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
@@ -260,6 +268,7 @@ def full_chain():
     return jsonify(response), 200
 
 
+#Register nodes 
 @app.route('/nodes/register', methods=['POST'])
 def register_nodes():
     values = request.get_json()
@@ -280,7 +289,7 @@ def register_nodes():
 
 
 
-
+#Transmit our chain whether it is replaced or authoritative. 
 @app.route('/nodes/resolve', methods=['GET'])
 def consensus():
     replaced = blockchain.resolve_conflicts()
@@ -304,7 +313,7 @@ if __name__ == '__main__':
 
     parser = ArgumentParser()
     parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
-    args = parser.parse_args()
+    args = parser.parse_args() #argparse module helps to make interface easily. 
     port = args.port
 
     app.run(host='0.0.0.0', port=port)
