@@ -17,9 +17,9 @@ Curriculum
 
 4. lab3: p2p connection using python
 
-5.lab4: RPC api
+5. lab4: RPC api
 
-6.lab5: Consensus and finality
+6. lab5: Consensus and finality
 
 
 
