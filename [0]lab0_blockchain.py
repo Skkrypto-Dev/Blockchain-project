@@ -2,7 +2,7 @@ import hashlib #import hashlib library
 import json # import json library
 from time import time
 from urllib.parse import urlparse
-from uuid import uuid4 # Universal Unizue Identifier. The number of 16 bite length
+from uuid import uuid4 # Universal Unizue Identifier. 
 import requests
 from flask import Flask, jsonify, request
 
