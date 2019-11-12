@@ -199,7 +199,7 @@ class Blockchain: #block chain class
 
         guess = f'{last_proof}{proof}{last_hash}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000" #0000 means the difficulty.
+        return guess_hash[:4] == "0000" #0000 means the difficulty. 
 
 
 # Instantiate the Node
@@ -220,7 +220,8 @@ def mine():
     proof = blockchain.proof_of_work(last_block)
 
     # We must receive a reward for finding the proof.
-    # The sender is "0" to signify that this node has mined a new coin.
+    # The sender is "0" is just to signify as a genesis block without any sender.
+    # This genesis block is only printed once.
     blockchain.new_transaction(
         sender="0",
         recipient=node_identifier,
